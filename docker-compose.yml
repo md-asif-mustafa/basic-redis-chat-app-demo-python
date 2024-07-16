@@ -1,18 +1,29 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
   web:
-    build:
-      context: .
+    build: .
+    container_name: web
     ports:
       - "5000:5000"
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      - REDIS_ENDPOINT_URL=redis:6379
+      - REDIS_PASSWORD=your_redis_password
+      - SECRET_KEY=your_secret_key
     depends_on:
       - redis
+    command: python app.py
 
-  redis:
-    image: redis:latest
+  client:
+    build: ./client
+    container_name: client
     ports:
-      - "6379:6379"
+      - "3000:3000"
+    depends_on:
+      - web
