@@ -15,6 +15,7 @@ services:
     container_name: web
     environment:
       REDIS_ENDPOINT_URL: redis:6379
+      REDIS_PASSWORD: password@123
     depends_on:
       - redis
     command: python app.py
