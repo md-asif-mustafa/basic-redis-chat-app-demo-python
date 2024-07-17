@@ -1,27 +1,38 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
-    ports:
-      - "8080:8080"
-    depends_on:
-      - redis
-    environment:
-      - PORT=8080
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-
   redis:
-    image: "redis:alpine"
+    image: redis:latest
+    container_name: redis
     ports:
       - "6379:6379"
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
+  web:
+    build: .
+    container_name: web
+    environment:
+      REDIS_ENDPOINT_URL: redis:6379
+    depends_on:
+      - redis
+    command: python app.py
 
   client:
     build:
       context: ./client
     container_name: client
-    ports:
-      - "8000:8000"
     depends_on:
       - web
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web
+      - client
