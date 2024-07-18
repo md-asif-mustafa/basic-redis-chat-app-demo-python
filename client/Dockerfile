@@ -1,26 +1,14 @@
-# Use an official Node.js runtime as a parent image
-FROM node:14
+FROM node:14 AS web-build
+WORKDIR /usr/src/app
+COPY ./ ./client
+RUN cd client && npm install && npm run build --prod
 
-# Set the working directory
-WORKDIR /app
+# Use official nginx image as the base image
+FROM nginx:latest
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy the build output to replace the default nginx contents.
+COPY --from=web-build /usr/src/app/client/dist/client/ /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
-
-# Build the client application
-RUN npm run build
-
-# Serve the built application using a simple server
-RUN npm install -g serve
-
-# Expose the port that the app runs on
-EXPOSE 3000
-
-# Command to serve the built application
-CMD ["serve", "-s", "build"]
+# Expose port 4200
+EXPOSE 4200
