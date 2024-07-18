@@ -5,13 +5,13 @@ FROM node:14
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY client/package*.json ./
+COPY ./package*.json
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the application code
-COPY client .
+COPY .
 
 # Build the client application
 RUN npm run build
