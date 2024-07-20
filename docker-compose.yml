@@ -1,42 +1,40 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    depends_on:
-      - redis
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=secret
-
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    depends_on:
-      - app
-
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
     volumes:
-      - redis-data:/data
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+      - redis_data:/data
+    command: redis-server --requirepass "secret"
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=secret
+    depends_on:
+      - redis
+
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+    depends_on:
+      - app
 
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: nginx/Dockerfile
+    build: ./nginx
     ports:
       - "80:80"
     depends_on:
-      - app
       - client
 
 volumes:
-  redis-data:
+  redis_data:
