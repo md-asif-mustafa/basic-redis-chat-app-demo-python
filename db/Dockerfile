@@ -2,7 +2,7 @@
 FROM redis:latest
 
 # Set the maintainer label (optional)
-LABEL maintainer="your-email@example.com"
+LABEL maintainer="aprofile"
 
 # Expose the default Redis port
 EXPOSE 6379
