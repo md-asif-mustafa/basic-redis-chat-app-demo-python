@@ -10,7 +10,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - REDIS_PASSWORD=password
+      - REDIS_PASSWORD=secret
 
   client:
     build:
