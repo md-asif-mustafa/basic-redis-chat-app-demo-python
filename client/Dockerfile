@@ -1,23 +1,23 @@
 # Use an official Node.js runtime as a parent image
-FROM node:14
+FROM node:18 # Consider using a more recent LTS version
 
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package.json package-lock.json ./
+# Copy package.json and yarn.lock
+COPY package.json yarn.lock ./
 
 # Install dependencies
-RUN npm install
+RUN yarn install
 
 # Copy the rest of the application code
 COPY . .
 
 # Build the client application
-RUN npm run build
+RUN yarn build
 
-# Serve the built application using a simple server
-RUN npm install -g serve
+# Install serve globally
+RUN yarn global add serve
 
 # Expose the port that the app runs on
 EXPOSE 3000
