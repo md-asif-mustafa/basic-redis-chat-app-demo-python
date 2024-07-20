@@ -32,14 +32,11 @@ services:
       - app
 
   nginx:
-    restart: always
-    image: nginx:latest
-    container_name: nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    build: ./nginx
     ports:
       - "80:80"
+    depends_on:
+      - client
 
 volumes:
   redis_data:
