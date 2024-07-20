@@ -43,6 +43,7 @@ def create():
     users = []
     for demo_user in demo_users:
         user = utils.create_user(demo_user, demo_password)
+        print(f"Created user: {user}")  # Add this line for debugging
         users.append(user)
 
     rooms = {}
