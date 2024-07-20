@@ -15,5 +15,8 @@ COPY . /app
 EXPOSE 8080
 ENV PORT 8080
 
+# Set the Python path to include the /app directory
+ENV PYTHONPATH=/app
+
 # Run demo_data.py and then start the app with gunicorn
 CMD ["sh", "-c", "python chat/demo_data.py && exec gunicorn --bind :$PORT --worker-class eventlet -w 1 chat.app:app"]
