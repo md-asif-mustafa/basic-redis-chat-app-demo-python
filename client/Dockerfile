@@ -1,5 +1,5 @@
-# Use an official Node.js runtime as a parent image
-FROM node:16
+# Use the official Node.js image
+FROM node:16 AS build
 
 # Set the working directory
 WORKDIR /app
@@ -7,20 +7,23 @@ WORKDIR /app
 # Copy package.json and yarn.lock
 COPY package.json yarn.lock ./
 
-# Install dependencies
+# Install dependencies using Yarn
 RUN yarn install
 
 # Copy the rest of the application code
 COPY . .
 
-# Build the client application
+# Build the React app
 RUN yarn build
 
-# Install serve globally
-RUN yarn global add serve
+# Use the official Nginx image to serve the build
+FROM nginx:alpine
 
-# Expose the port that the app runs on
-EXPOSE 3000
+# Copy the build artifacts from the build stage
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Command to serve the built application
-CMD ["serve", "-s", "build"]
+# Expose port 80 for Nginx
+EXPOSE 80
+
+# Default command to run Nginx
+CMD ["nginx", "-g", "daemon off;"]
