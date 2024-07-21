@@ -30,13 +30,13 @@ services:
       - REACT_APP_API_URL=http://localhost:8080
     depends_on:
       - app
-
-  nginx:
-    build: ./nginx
-    ports:
-      - "80:80"
-    depends_on:
-      - client
+      
+  # nginx:
+  #   build: ./nginx
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - client
 
 volumes:
   redis_data:

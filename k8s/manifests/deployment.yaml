@@ -1,0 +1,22 @@
+# This is a sample deployment manifest file for a simple web application.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-redis
+  labels:
+    app: python-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-redis
+  template:
+    metadata:
+      labels:
+        app: python-redis
+    spec:
+      containers:
+      - name: python-redis
+        image: <docker-user-name>/go-web-app
+        ports:
+        - containerPort: 8080
