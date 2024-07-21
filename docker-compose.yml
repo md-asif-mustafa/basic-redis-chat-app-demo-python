@@ -7,7 +7,10 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --requirepass "secret"
+    command: redis-server /usr/local/etc/redis/redis.conf
+    configs:
+      - source: redis_config
+        target: /usr/local/etc/redis/redis.conf
 
   app:
     build:
@@ -19,24 +22,15 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=secret
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - CHAT_CONFIG=chat.config.ConfigDev
     depends_on:
       - redis
 
-  client:
-    build: ./client
-    ports:
-      - "3000:3000"
-    environment:
-      - REACT_APP_API_URL=http://localhost:8080
-    depends_on:
-      - app
-      
-  # nginx:
-  #   build: ./nginx
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - client
-
 volumes:
   redis_data:
+
+configs:
+  redis_config:
+    file: ./db/redis.conf
