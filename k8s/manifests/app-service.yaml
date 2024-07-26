@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: python-redis
+  name: app-service
   labels:
-    app: python-redis
+    app: app
 spec:
   ports:
   - port: 80
     targetPort: 8080
     protocol: TCP
   selector:
-    app: python-redis
-  type: ClusterIP
+    app: app
+    type: ClusterIP
